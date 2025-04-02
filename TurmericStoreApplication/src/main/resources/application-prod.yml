@@ -1,0 +1,39 @@
+spring:
+  cloud:
+    gcp:
+      firestore:
+        project-id: ${GCP_PROJECT_ID}
+      storage:
+        project-id: ${GCP_PROJECT_ID}
+
+# Production-specific security configuration
+app:
+  security:
+    require-https: true
+  storage:
+    bucket-name: ${STORAGE_BUCKET:turmeric-store-prod}
+
+# Production-specific logging
+logging:
+  level:
+    root: WARN
+    com.turmericstore: INFO
+    org.springframework.web: WARN
+    org.springframework.security: WARN
+  file:
+    name: /var/log/turmeric-store/application.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 7
+
+# Disable debug mode for production
+debug: false
+
+# Server options optimized for production
+server:
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: /var/log/turmeric-store
+      pattern: "%h %l %u %t \"%r\" %s %b %D"

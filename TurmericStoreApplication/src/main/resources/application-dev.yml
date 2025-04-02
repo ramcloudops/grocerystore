@@ -1,0 +1,28 @@
+spring:
+  cloud:
+    gcp:
+      firestore:
+        emulator:
+          enabled: true
+          host: localhost:8081
+      storage:
+        project-id: ${GCP_PROJECT_ID:local-project}
+        credentials:
+          location: file:${GCP_CREDENTIALS_PATH:./local-credentials.json}
+
+# Development-specific security configuration
+app:
+  security:
+    require-https: false
+  storage:
+    bucket-name: ${STORAGE_BUCKET:turmeric-store-dev}
+
+# Development-specific logging
+logging:
+  level:
+    com.turmericstore: DEBUG
+    org.springframework.web: DEBUG
+    com.google.cloud: INFO
+
+# Enable debug mode for Spring Boot
+debug: true

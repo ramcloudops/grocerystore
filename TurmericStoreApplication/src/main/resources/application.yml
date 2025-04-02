@@ -1,0 +1,73 @@
+spring:
+  application:
+    name: turmeric-store-api
+  profiles:
+    active: dev
+  # Common configurations
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+  cache:
+    cache-names: products, categories, product-details
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=30m
+
+# Security configuration
+app:
+  jwt:
+    secret: ${JWT_SECRET:turmericSecureJwtSecretKeyThatShouldBeAtLeast32CharactersLong}
+    expiration-ms: 86400000  # 24 hours
+    refresh-expiration-ms: 604800000  # 7 days
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:3000}
+
+# API rate limiting
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: rate-limit-buckets
+      url: .*
+      rate-limits:
+        - bandwidths:
+            - capacity: 20
+              time: 1
+              unit: minutes
+
+# Open API documentation
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+  packages-to-scan: com.turmericstore.controller
+
+# Server configuration optimized for e2-micro
+server:
+  port: 8080
+  tomcat:
+    max-threads: 20
+    min-spare-threads: 5
+    max-connections: 100
+    connection-timeout: 5000
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+    min-response-size: 1024
+
+# Logging configuration
+logging:
+  level:
+    root: INFO
+    com.turmericstore: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# Fire Database configiration
+  cloud:
+    gcp:
+      firestore:
+        project-id: adroit-bonsai-454317-c4
